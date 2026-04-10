@@ -5921,6 +5921,15 @@
 	},
 	{
 		"classNames": [
+			"ListTypeLocalService",
+			"ListTypeLocalServiceUtil"
+		],
+		"from": "getListType(String paramName, String paramName)",
+		"issueKey": "LPD-85858",
+		"to": "getListType(0, param#0#, param#1#)"
+	},
+	{
+		"classNames": [
 			"PhoneLocalService",
 			"PhoneLocalServiceUtil",
 			"PhoneService",
