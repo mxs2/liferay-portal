@@ -664,25 +664,82 @@ public class ObjectEntryServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-112318")
 	public void testGetManyToManyObjectEntries() throws Exception {
+		UnsafeBiFunction<Long, Long, Integer, PortalException>
+			getManyToManyObjectEntriesCountUnsafeBiFunction =
+				(objectRelationshipId, primaryKey) ->
+					_objectEntryService.getManyToManyObjectEntriesCount(
+						_group.getGroupId(), objectRelationshipId, primaryKey,
+						true, false, null);
 		UnsafeBiFunction<Long, Long, List<ObjectEntry>, PortalException>
-			unsafeBiFunction = (objectRelationshipId, primaryKey) ->
-				_objectEntryService.getManyToManyObjectEntries(
-					_group.getGroupId(), objectRelationshipId, primaryKey, true,
-					false, null, QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+			getManyToManyObjectEntriesUnsafeBiFunction =
+				(objectRelationshipId, primaryKey) ->
+					_objectEntryService.getManyToManyObjectEntries(
+						_group.getGroupId(), objectRelationshipId, primaryKey,
+						true, false, null, QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS);
 
 		_testGetObjectEntries(
 			false, false, ObjectRelationshipConstants.TYPE_MANY_TO_MANY,
-			unsafeBiFunction);
+			getManyToManyObjectEntriesCountUnsafeBiFunction,
+			getManyToManyObjectEntriesUnsafeBiFunction);
 		_testGetObjectEntries(
 			false, true, ObjectRelationshipConstants.TYPE_MANY_TO_MANY,
-			unsafeBiFunction);
+			getManyToManyObjectEntriesCountUnsafeBiFunction,
+			getManyToManyObjectEntriesUnsafeBiFunction);
 		_testGetObjectEntries(
 			true, false, ObjectRelationshipConstants.TYPE_MANY_TO_MANY,
-			unsafeBiFunction);
+			getManyToManyObjectEntriesCountUnsafeBiFunction,
+			getManyToManyObjectEntriesUnsafeBiFunction);
 		_testGetObjectEntries(
 			true, true, ObjectRelationshipConstants.TYPE_MANY_TO_MANY,
-			unsafeBiFunction);
+			getManyToManyObjectEntriesCountUnsafeBiFunction,
+			getManyToManyObjectEntriesUnsafeBiFunction);
+	}
+
+	@Test
+	@TestInfo("LPD-112318")
+	public void testGetObjectEntriesCount() throws Exception {
+		ObjectEntry objectEntry1 = _addObjectEntry(_adminUser);
+
+		_setResourcePermissions(
+			_objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(objectEntry1.getObjectEntryId()), RoleConstants.USER,
+			new String[] {ActionKeys.VIEW});
+
+		_setUser(_user);
+
+		Assert.assertEquals(
+			1,
+			_objectEntryService.getObjectEntriesCount(
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
+				WorkflowConstants.STATUS_ANY));
+		Assert.assertEquals(
+			1,
+			_objectEntryService.getObjectEntriesCount(
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
+				WorkflowConstants.STATUS_APPROVED));
+
+		ObjectEntry objectEntry2 = _addObjectEntry(_adminUser);
+
+		_setResourcePermissions(
+			_objectDefinition.getClassName(),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(objectEntry2.getObjectEntryId()), RoleConstants.USER,
+			new String[] {ActionKeys.VIEW});
+
+		Assert.assertEquals(
+			2,
+			_objectEntryService.getObjectEntriesCount(
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
+				WorkflowConstants.STATUS_ANY));
+		Assert.assertEquals(
+			2,
+			_objectEntryService.getObjectEntriesCount(
+				_group.getGroupId(), _objectDefinition.getObjectDefinitionId(),
+				WorkflowConstants.STATUS_APPROVED));
 	}
 
 	@Test
@@ -995,26 +1052,38 @@ public class ObjectEntryServiceTest {
 	}
 
 	@Test
+	@TestInfo("LPD-112318")
 	public void testGetOneToManyObjectEntries() throws Exception {
+		UnsafeBiFunction<Long, Long, Integer, PortalException>
+			getOneToManyObjectEntriesCountUnsafeBiFunction =
+				(objectRelationshipId, primaryKey) ->
+					_objectEntryService.getOneToManyObjectEntriesCount(
+						_group.getGroupId(), objectRelationshipId, null,
+						primaryKey, true, null);
 		UnsafeBiFunction<Long, Long, List<ObjectEntry>, PortalException>
-			unsafeBiFunction = (objectRelationshipId, primaryKey) ->
-				_objectEntryService.getOneToManyObjectEntries(
-					_group.getGroupId(), objectRelationshipId, null, false,
-					primaryKey, true, null, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS, null);
+			getOneToManyObjectEntriesUnsafeBiFunction =
+				(objectRelationshipId, primaryKey) ->
+					_objectEntryService.getOneToManyObjectEntries(
+						_group.getGroupId(), objectRelationshipId, null, false,
+						primaryKey, true, null, QueryUtil.ALL_POS,
+						QueryUtil.ALL_POS, null);
 
 		_testGetObjectEntries(
 			false, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
-			unsafeBiFunction);
+			getOneToManyObjectEntriesCountUnsafeBiFunction,
+			getOneToManyObjectEntriesUnsafeBiFunction);
 		_testGetObjectEntries(
 			false, true, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
-			unsafeBiFunction);
+			getOneToManyObjectEntriesCountUnsafeBiFunction,
+			getOneToManyObjectEntriesUnsafeBiFunction);
 		_testGetObjectEntries(
 			true, false, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
-			unsafeBiFunction);
+			getOneToManyObjectEntriesCountUnsafeBiFunction,
+			getOneToManyObjectEntriesUnsafeBiFunction);
 		_testGetObjectEntries(
 			true, true, ObjectRelationshipConstants.TYPE_ONE_TO_MANY,
-			unsafeBiFunction);
+			getOneToManyObjectEntriesCountUnsafeBiFunction,
+			getOneToManyObjectEntriesUnsafeBiFunction);
 	}
 
 	@Test
@@ -1631,8 +1700,10 @@ public class ObjectEntryServiceTest {
 
 	private void _testGetObjectEntries(
 			boolean hasPermission, boolean sqlCheckEnabled, String type,
+			UnsafeBiFunction<Long, Long, Integer, PortalException>
+				getObjectEntriesCountUnsafeBiFunction,
 			UnsafeBiFunction<Long, Long, List<ObjectEntry>, PortalException>
-				unsafeBiFunction)
+				getObjectEntriesUnsafeBiFunction)
 		throws Exception {
 
 		ObjectRelationship objectRelationship =
@@ -1685,17 +1756,27 @@ public class ObjectEntryServiceTest {
 				Assert.assertEquals(
 					SetUtil.fromArray(relatedObjectEntry1, relatedObjectEntry2),
 					SetUtil.fromList(
-						unsafeBiFunction.apply(
+						getObjectEntriesUnsafeBiFunction.apply(
 							objectRelationship.getObjectRelationshipId(),
 							objectEntry.getObjectEntryId())));
+				Assert.assertEquals(
+					Integer.valueOf(2),
+					getObjectEntriesCountUnsafeBiFunction.apply(
+						objectRelationship.getObjectRelationshipId(),
+						objectEntry.getObjectEntryId()));
 			}
 			else {
 				Assert.assertEquals(
 					SetUtil.fromArray(relatedObjectEntry1),
 					SetUtil.fromList(
-						unsafeBiFunction.apply(
+						getObjectEntriesUnsafeBiFunction.apply(
 							objectRelationship.getObjectRelationshipId(),
 							objectEntry.getObjectEntryId())));
+				Assert.assertEquals(
+					Integer.valueOf(1),
+					getObjectEntriesCountUnsafeBiFunction.apply(
+						objectRelationship.getObjectRelationshipId(),
+						objectEntry.getObjectEntryId()));
 			}
 		}
 		finally {
