@@ -308,9 +308,19 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			boolean related, boolean reverse, String search)
 		throws PortalException {
 
-		return objectEntryLocalService.getManyToManyObjectEntriesCount(
-			groupId, objectRelationshipId, primaryKey, related, reverse,
-			search);
+		if (ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission() ||
+			_inlineSQLHelper.isEnabled(groupId)) {
+
+			return objectEntryLocalService.getManyToManyObjectEntriesCount(
+				groupId, objectRelationshipId, primaryKey, related, reverse,
+				search);
+		}
+
+		List<ObjectEntry> objectEntries = getManyToManyObjectEntries(
+			groupId, objectRelationshipId, primaryKey, related, reverse, search,
+			QueryUtil.ALL_POS, QueryUtil.ALL_POS);
+
+		return objectEntries.size();
 	}
 
 	@Override
@@ -375,17 +385,35 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 	public int getObjectEntriesCount(
 		long groupId, long objectDefinitionId, int status) {
 
-		if (status == WorkflowConstants.STATUS_ANY) {
-			int count = objectEntryPersistence.countByG_ODI(
-				groupId, objectDefinitionId);
-			int trashCount = objectEntryPersistence.countByG_ODI_S(
-				groupId, objectDefinitionId, WorkflowConstants.STATUS_IN_TRASH);
+		if (ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission()) {
+			if (status == WorkflowConstants.STATUS_ANY) {
+				int count = objectEntryPersistence.countByG_ODI(
+					groupId, objectDefinitionId);
+				int trashCount = objectEntryPersistence.countByG_ODI_S(
+					groupId, objectDefinitionId,
+					WorkflowConstants.STATUS_IN_TRASH);
 
-			return count - trashCount;
+				return count - trashCount;
+			}
+
+			return objectEntryPersistence.countByG_ODI_S(
+				groupId, objectDefinitionId, status);
 		}
 
-		return objectEntryPersistence.countByG_ODI_S(
-			groupId, objectDefinitionId, status);
+		try {
+			List<ObjectEntry> objectEntries = getObjectEntries(
+				groupId, objectDefinitionId, status, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS);
+
+			return objectEntries.size();
+		}
+		catch (PortalException portalException) {
+			if (_log.isDebugEnabled()) {
+				_log.debug(portalException);
+			}
+
+			return 0;
+		}
 	}
 
 	@Override
@@ -441,9 +469,19 @@ public class ObjectEntryServiceImpl extends ObjectEntryServiceBaseImpl {
 			long primaryKey, boolean related, String search)
 		throws PortalException {
 
-		return objectEntryLocalService.getOneToManyObjectEntriesCount(
-			groupId, objectRelationshipId, predicate, primaryKey, related,
-			search);
+		if (ObjectEntryThreadLocal.isSkipObjectEntryResourcePermission() ||
+			_inlineSQLHelper.isEnabled(groupId)) {
+
+			return objectEntryLocalService.getOneToManyObjectEntriesCount(
+				groupId, objectRelationshipId, predicate, primaryKey, related,
+				search);
+		}
+
+		List<ObjectEntry> objectEntries = getOneToManyObjectEntries(
+			groupId, objectRelationshipId, predicate, false, primaryKey,
+			related, search, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+
+		return objectEntries.size();
 	}
 
 	@Override
