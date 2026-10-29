@@ -62,6 +62,7 @@ import com.liferay.dynamic.data.mapping.security.permission.DDMPermissionSupport
 import com.liferay.dynamic.data.mapping.service.DDMStructureLayoutLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLinkLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMStructureLocalService;
+import com.liferay.dynamic.data.mapping.service.DDMStructureService;
 import com.liferay.dynamic.data.mapping.service.DDMTemplateLocalService;
 import com.liferay.dynamic.data.mapping.spi.converter.SPIDDMFormRuleConverter;
 import com.liferay.dynamic.data.mapping.storage.DDMFormFieldValue;
@@ -418,8 +419,8 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 		if (Validator.isNull(keywords)) {
 			return Page.of(
 				transform(
-					_ddmStructureLocalService.getStructures(
-						siteId,
+					_ddmStructureService.getStructures(
+						contextCompany.getCompanyId(), new long[] {siteId},
 						DataDefinitionContentTypeRegistryUtil.getClassNameId(
 							contentType),
 						pagination.getStartPosition(),
@@ -428,8 +429,8 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 							(Sort)ArrayUtil.getValue(sorts, 0))),
 					this::_toDataDefinition),
 				pagination,
-				_ddmStructureLocalService.getStructuresCount(
-					siteId,
+				_ddmStructureService.getStructuresCount(
+					contextCompany.getCompanyId(), new long[] {siteId},
 					DataDefinitionContentTypeRegistryUtil.getClassNameId(
 						contentType)));
 		}
@@ -2104,6 +2105,9 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 
 	@Reference
 	private DDMStructureLocalService _ddmStructureLocalService;
+
+	@Reference
+	private DDMStructureService _ddmStructureService;
 
 	@Reference
 	private DDMTemplateLocalService _ddmTemplateLocalService;
