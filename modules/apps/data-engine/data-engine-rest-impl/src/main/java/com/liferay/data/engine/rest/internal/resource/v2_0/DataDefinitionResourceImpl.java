@@ -81,6 +81,7 @@ import com.liferay.journal.service.JournalArticleLocalService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
 import com.liferay.portal.kernel.change.tracking.CTAware;
+import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.json.JSONArray;
 import com.liferay.portal.kernel.json.JSONFactory;
 import com.liferay.portal.kernel.json.JSONObject;
@@ -91,6 +92,7 @@ import com.liferay.portal.kernel.search.Field;
 import com.liferay.portal.kernel.search.Sort;
 import com.liferay.portal.kernel.security.auth.PrincipalThreadLocal;
 import com.liferay.portal.kernel.security.permission.ActionKeys;
+import com.liferay.portal.kernel.security.permission.PermissionChecker;
 import com.liferay.portal.kernel.security.permission.PermissionThreadLocal;
 import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.ResourceLocalService;
@@ -416,22 +418,36 @@ public class DataDefinitionResourceImpl extends BaseDataDefinitionResourceImpl {
 		}
 
 		if (Validator.isNull(keywords)) {
-			return Page.of(
-				transform(
+			PermissionChecker permissionChecker =
+				PermissionThreadLocal.getPermissionChecker();
+
+			List<DDMStructure> ddmStructures = new ArrayList<>();
+
+			for (DDMStructure ddmStructure :
 					_ddmStructureLocalService.getStructures(
 						siteId,
 						DataDefinitionContentTypeRegistryUtil.getClassNameId(
 							contentType),
-						pagination.getStartPosition(),
-						pagination.getEndPosition(),
+						QueryUtil.ALL_POS, QueryUtil.ALL_POS,
 						_toOrderByComparator(
-							(Sort)ArrayUtil.getValue(sorts, 0))),
+							(Sort)ArrayUtil.getValue(sorts, 0)))) {
+
+				if (!DataDefinitionPermissionUtil.contains(
+						permissionChecker, ddmStructure, ActionKeys.VIEW)) {
+
+					continue;
+				}
+
+				ddmStructures.add(ddmStructure);
+			}
+
+			return Page.of(
+				transform(
+					ListUtil.subList(
+						ddmStructures, pagination.getStartPosition(),
+						pagination.getEndPosition()),
 					this::_toDataDefinition),
-				pagination,
-				_ddmStructureLocalService.getStructuresCount(
-					siteId,
-					DataDefinitionContentTypeRegistryUtil.getClassNameId(
-						contentType)));
+				pagination, ddmStructures.size());
 		}
 
 		return SearchUtil.search(
