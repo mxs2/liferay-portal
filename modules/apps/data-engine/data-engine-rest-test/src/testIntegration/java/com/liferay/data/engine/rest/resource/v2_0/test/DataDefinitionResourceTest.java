@@ -33,18 +33,26 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
+import com.liferay.portal.kernel.service.ResourcePermissionLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DataGuard;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -252,6 +260,77 @@ public class DataDefinitionResourceTest
 			richTextDataDefinitionField.getCustomProperties();
 
 		Assert.assertTrue(customProperties.containsKey("editorConfig"));
+	}
+
+	@Test
+	@TestInfo("LPD-112316")
+	public void testGetSiteDataDefinitionByContentTypeContentTypePageWithViewPermission()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		DataDefinition dataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				group.getGroupId(), "journal", randomDataDefinition());
+
+		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+			dataDefinition.getId());
+
+		Role role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		_resourcePermissionLocalService.setResourcePermissions(
+			ddmStructure.getCompanyId(),
+			ResourceActionsUtil.getCompositeModelName(
+				_portal.getClassName(ddmStructure.getClassNameId()),
+				DDMStructure.class.getName()),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(ddmStructure.getStructureId()), role.getRoleId(),
+			new String[] {ActionKeys.VIEW});
+
+		User user = UserTestUtil.addUser(
+			testCompany, RandomTestUtil.randomString());
+
+		_userLocalService.addRoleUser(role.getRoleId(), user.getUserId());
+
+		DataDefinitionResource userDataDefinitionResource =
+			_getDataDefinitionResource(user);
+
+		Page<DataDefinition> page =
+			userDataDefinitionResource.
+				getSiteDataDefinitionByContentTypeContentTypePage(
+					group.getGroupId(), "journal", null, Pagination.of(1, 2),
+					null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		DataDefinition resultDataDefinition = page.fetchFirstItem();
+
+		Assert.assertEquals(
+			dataDefinition.getId(), resultDataDefinition.getId());
+	}
+
+	@Test
+	@TestInfo("LPD-112316")
+	public void testGetSiteDataDefinitionByContentTypeContentTypePageWithoutViewPermission()
+		throws Exception {
+
+		Group group = GroupTestUtil.addGroup();
+
+		dataDefinitionResource.postSiteDataDefinitionByContentType(
+			group.getGroupId(), "journal", randomDataDefinition());
+
+		DataDefinitionResource userDataDefinitionResource =
+			_getDataDefinitionResource(
+				UserTestUtil.addUser(
+					testCompany, RandomTestUtil.randomString()));
+
+		Page<DataDefinition> page =
+			userDataDefinitionResource.
+				getSiteDataDefinitionByContentTypeContentTypePage(
+					group.getGroupId(), "journal", null, Pagination.of(1, 2),
+					null);
+
+		Assert.assertEquals(0, page.getTotalCount());
 	}
 
 	@Override
@@ -1025,6 +1104,18 @@ public class DataDefinitionResourceTest
 		throw new AssertionError("No data definition field named " + name);
 	}
 
+	private DataDefinitionResource _getDataDefinitionResource(User user) {
+		return DataDefinitionResource.builder(
+		).authentication(
+			user.getEmailAddress(), user.getPasswordUnencrypted()
+		).endpoint(
+			testCompany.getVirtualHostname(),
+			PortalUtil.getPortalServerPort(false), "http"
+		).locale(
+			LocaleUtil.getDefault()
+		).build();
+	}
+
 	private List<String> _getDataLayoutColumnFieldNames(DataLayout dataLayout) {
 		List<String> dataLayoutColumnFieldNames = new ArrayList<>();
 
@@ -1401,6 +1492,12 @@ public class DataDefinitionResourceTest
 	private Portal _portal;
 
 	@Inject
+	private ResourcePermissionLocalService _resourcePermissionLocalService;
+
+	@Inject
 	private TestDataDefinitionContentType _testDataDefinitionContentType;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
