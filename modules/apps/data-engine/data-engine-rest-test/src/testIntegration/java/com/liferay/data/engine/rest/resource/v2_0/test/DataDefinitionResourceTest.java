@@ -33,18 +33,26 @@ import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.json.JSONUtil;
 import com.liferay.portal.kernel.model.Company;
 import com.liferay.portal.kernel.model.Group;
+import com.liferay.portal.kernel.model.ResourceConstants;
+import com.liferay.portal.kernel.model.Role;
 import com.liferay.portal.kernel.model.User;
 import com.liferay.portal.kernel.model.role.RoleConstants;
 import com.liferay.portal.kernel.module.util.SystemBundleUtil;
 import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
+import com.liferay.portal.kernel.security.permission.ActionKeys;
 import com.liferay.portal.kernel.security.permission.ResourceActions;
+import com.liferay.portal.kernel.security.permission.ResourceActionsUtil;
 import com.liferay.portal.kernel.service.CompanyLocalService;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceWrapper;
+import com.liferay.portal.kernel.service.UserLocalService;
+import com.liferay.portal.kernel.test.TestInfo;
 import com.liferay.portal.kernel.test.rule.DataGuard;
+import com.liferay.portal.kernel.test.rule.DeleteAfterTestRun;
 import com.liferay.portal.kernel.test.util.CompanyTestUtil;
 import com.liferay.portal.kernel.test.util.GroupTestUtil;
 import com.liferay.portal.kernel.test.util.RandomTestUtil;
+import com.liferay.portal.kernel.test.util.RoleTestUtil;
 import com.liferay.portal.kernel.test.util.UserTestUtil;
 import com.liferay.portal.kernel.util.HashMapBuilder;
 import com.liferay.portal.kernel.util.HashMapDictionaryBuilder;
@@ -252,6 +260,72 @@ public class DataDefinitionResourceTest
 			richTextDataDefinitionField.getCustomProperties();
 
 		Assert.assertTrue(customProperties.containsKey("editorConfig"));
+	}
+
+	@Test
+	@TestInfo("LPD-112316")
+	public void testGetSiteDataDefinitionByContentTypeContentTypePageWithoutViewPermission()
+		throws Exception {
+
+		_group = GroupTestUtil.addGroup();
+
+		DataDefinition dataDefinition =
+			dataDefinitionResource.postSiteDataDefinitionByContentType(
+				_group.getGroupId(), _CONTENT_TYPE, randomDataDefinition());
+
+		_user = UserTestUtil.addUser();
+
+		String password = RandomTestUtil.randomString();
+
+		_userLocalService.updatePassword(
+			_user.getUserId(), password, password, false, true);
+
+		DataDefinitionResource userDataDefinitionResource =
+			DataDefinitionResource.builder(
+			).authentication(
+				_user.getEmailAddress(), password
+			).endpoint(
+				testCompany.getVirtualHostname(),
+				PortalUtil.getPortalServerPort(false), "http"
+			).locale(
+				LocaleUtil.getDefault()
+			).build();
+
+		Page<DataDefinition> page =
+			userDataDefinitionResource.
+				getSiteDataDefinitionByContentTypeContentTypePage(
+					_group.getGroupId(), _CONTENT_TYPE, null,
+					Pagination.of(1, 2), null);
+
+		Assert.assertEquals(0, page.getTotalCount());
+
+		DDMStructure ddmStructure = _ddmStructureLocalService.getStructure(
+			dataDefinition.getId());
+
+		_role = RoleTestUtil.addRole(RoleConstants.TYPE_REGULAR);
+
+		RoleTestUtil.addResourcePermission(
+			_role,
+			ResourceActionsUtil.getCompositeModelName(
+				_portal.getClassName(ddmStructure.getClassNameId()),
+				DDMStructure.class.getName()),
+			ResourceConstants.SCOPE_INDIVIDUAL,
+			String.valueOf(ddmStructure.getStructureId()), ActionKeys.VIEW);
+
+		_userLocalService.addRoleUser(_role.getRoleId(), _user.getUserId());
+
+		page =
+			userDataDefinitionResource.
+				getSiteDataDefinitionByContentTypeContentTypePage(
+					_group.getGroupId(), _CONTENT_TYPE, null,
+					Pagination.of(1, 2), null);
+
+		Assert.assertEquals(1, page.getTotalCount());
+
+		DataDefinition resultDataDefinition = page.fetchFirstItem();
+
+		Assert.assertEquals(
+			dataDefinition.getId(), resultDataDefinition.getId());
 	}
 
 	@Override
@@ -1397,10 +1471,22 @@ public class DataDefinitionResourceTest
 	@Inject
 	private DDMStructureLocalService _ddmStructureLocalService;
 
+	@DeleteAfterTestRun
+	private Group _group;
+
 	@Inject(type = Portal.class)
 	private Portal _portal;
 
+	@DeleteAfterTestRun
+	private Role _role;
+
 	@Inject
 	private TestDataDefinitionContentType _testDataDefinitionContentType;
+
+	@DeleteAfterTestRun
+	private User _user;
+
+	@Inject
+	private UserLocalService _userLocalService;
 
 }
