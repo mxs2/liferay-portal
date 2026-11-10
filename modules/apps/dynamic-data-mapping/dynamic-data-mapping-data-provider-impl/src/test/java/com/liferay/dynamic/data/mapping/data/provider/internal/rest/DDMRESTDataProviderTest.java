@@ -10,6 +10,7 @@ import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderInstanceSet
 import com.liferay.dynamic.data.mapping.data.provider.DDMDataProviderRequest;
 import com.liferay.dynamic.data.mapping.data.provider.configuration.DDMDataProviderConfiguration;
 import com.liferay.dynamic.data.mapping.model.DDMDataProviderInstance;
+import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceLocalService;
 import com.liferay.dynamic.data.mapping.service.DDMDataProviderInstanceService;
 import com.liferay.petra.string.StringBundler;
 import com.liferay.petra.string.StringPool;
@@ -74,9 +75,6 @@ public class DDMRESTDataProviderTest {
 
 	@Test
 	public void testGetData() throws Exception {
-		DDMDataProviderInstanceService ddmDataProviderInstanceService =
-			Mockito.mock(DDMDataProviderInstanceService.class);
-
 		DDMDataProviderInstance ddmDataProviderInstance = Mockito.mock(
 			DDMDataProviderInstance.class);
 
@@ -96,6 +94,9 @@ public class DDMRESTDataProviderTest {
 			dataProviderInstanceId
 		);
 
+		DDMDataProviderInstanceService ddmDataProviderInstanceService =
+			Mockito.mock(DDMDataProviderInstanceService.class);
+
 		String ddmDataProviderId = RandomTestUtil.randomString();
 
 		Mockito.when(
@@ -108,6 +109,21 @@ public class DDMRESTDataProviderTest {
 		ReflectionTestUtil.setFieldValue(
 			_ddmrestDataProvider, "_ddmDataProviderInstanceService",
 			ddmDataProviderInstanceService);
+
+		DDMDataProviderInstanceLocalService
+			ddmDataProviderInstanceLocalService = Mockito.mock(
+				DDMDataProviderInstanceLocalService.class);
+
+		Mockito.when(
+			ddmDataProviderInstanceLocalService.getDataProviderInstance(
+				dataProviderInstanceId)
+		).thenReturn(
+			ddmDataProviderInstance
+		);
+
+		ReflectionTestUtil.setFieldValue(
+			_ddmrestDataProvider, "_ddmDataProviderInstanceLocalService",
+			ddmDataProviderInstanceLocalService);
 
 		DDMDataProviderInstanceSettings ddmDataProviderInstanceSettings =
 			Mockito.mock(DDMDataProviderInstanceSettings.class);
