@@ -161,7 +161,7 @@ public class CalendarResourceTest extends BaseCalendarResourceTestCase {
 		throws Exception {
 
 		ExportTaskResource userExportTaskResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				ExportTaskResource.class, testCompany);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -194,7 +194,7 @@ public class CalendarResourceTest extends BaseCalendarResourceTestCase {
 
 	private void _testGetCalendarsPageWithoutPermission() throws Exception {
 		CalendarResource calendarResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				CalendarResource.class, testCompany);
 
 		assertHttpResponseStatusCode(

@@ -444,7 +444,7 @@ public class TaskResourceTest extends BaseTaskResourceTestCase {
 		Task task = testDeleteProcessTask_addTask();
 
 		TaskResource userTaskResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				TaskResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -462,7 +462,7 @@ public class TaskResourceTest extends BaseTaskResourceTestCase {
 		Task task = testGetProcessTask_addTask();
 
 		TaskResource userTaskResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				TaskResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -473,7 +473,7 @@ public class TaskResourceTest extends BaseTaskResourceTestCase {
 
 	private void _testGetProcessTasksPageWithoutPermission() throws Exception {
 		TaskResource userTaskResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				TaskResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -487,7 +487,7 @@ public class TaskResourceTest extends BaseTaskResourceTestCase {
 		Task task = testPatchProcessTaskComplete_addTask();
 
 		TaskResource userTaskResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				TaskResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -500,7 +500,7 @@ public class TaskResourceTest extends BaseTaskResourceTestCase {
 		Task task = testPatchProcessTask_addTask();
 
 		TaskResource userTaskResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				TaskResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -511,7 +511,7 @@ public class TaskResourceTest extends BaseTaskResourceTestCase {
 
 	private void _testPostProcessTaskWithoutPermission() throws Exception {
 		TaskResource userTaskResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				TaskResource.class, testCompany);
 
 		Task task = randomTask();
@@ -529,7 +529,7 @@ public class TaskResourceTest extends BaseTaskResourceTestCase {
 
 	private void _testPostTasksPageWithoutPermission() throws Exception {
 		TaskResource userTaskResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				TaskResource.class, testCompany);
 
 		assertHttpResponseStatusCode(

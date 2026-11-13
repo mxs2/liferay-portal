@@ -195,7 +195,7 @@ public class NodeResourceTest extends BaseNodeResourceTestCase {
 		Node node = testDeleteProcessNode_addNode();
 
 		NodeResource userNodeResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				NodeResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -210,7 +210,7 @@ public class NodeResourceTest extends BaseNodeResourceTestCase {
 
 	private void _testGetProcessNodesPageWithoutPermission() throws Exception {
 		NodeResource userNodeResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				NodeResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -224,7 +224,7 @@ public class NodeResourceTest extends BaseNodeResourceTestCase {
 		long totalCount = page.getTotalCount();
 
 		NodeResource userNodeResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				NodeResource.class, testCompany);
 
 		assertHttpResponseStatusCode(

@@ -219,7 +219,7 @@ public class HistogramMetricResourceTest
 		throws Exception {
 
 		HistogramMetricResource histogramMetricResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				HistogramMetricResource.class, testCompany);
 
 		assertHttpResponseStatusCode(

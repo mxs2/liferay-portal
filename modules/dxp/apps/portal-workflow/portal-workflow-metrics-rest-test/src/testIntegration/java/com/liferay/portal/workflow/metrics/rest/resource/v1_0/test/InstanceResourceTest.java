@@ -629,7 +629,7 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 		Instance instance = testDeleteProcessInstance_addInstance();
 
 		InstanceResource userInstanceResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				InstanceResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -647,7 +647,7 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 		Instance instance = testGetProcessInstance_addInstance();
 
 		InstanceResource userInstanceResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				InstanceResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -707,7 +707,7 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 		throws Exception {
 
 		InstanceResource userInstanceResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				InstanceResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -723,7 +723,7 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 		Instance instance = testPatchProcessInstanceComplete_addInstance();
 
 		InstanceResource userInstanceResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				InstanceResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -736,7 +736,7 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 		Instance instance = testPatchProcessInstance_addInstance();
 
 		InstanceResource userInstanceResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				InstanceResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -747,7 +747,7 @@ public class InstanceResourceTest extends BaseInstanceResourceTestCase {
 
 	private void _testPostProcessInstanceWithoutPermission() throws Exception {
 		InstanceResource userInstanceResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				InstanceResource.class, testCompany);
 
 		Instance instance = randomInstance();

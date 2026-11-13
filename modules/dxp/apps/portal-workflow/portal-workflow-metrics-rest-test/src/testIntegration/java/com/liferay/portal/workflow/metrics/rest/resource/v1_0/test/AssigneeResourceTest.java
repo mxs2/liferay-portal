@@ -145,7 +145,7 @@ public class AssigneeResourceTest extends BaseAssigneeResourceTestCase {
 		throws Exception {
 
 		AssigneeResource assigneeResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				AssigneeResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
