@@ -117,7 +117,7 @@ public class AssigneeResourceTest extends BaseAssigneeResourceTestCase {
 
 		Assert.assertEquals(0, page.getTotalCount());
 
-		_testPostProcessAssigneesPageWithoutPermission();
+		_testPostProcessAssigneePageWithoutPermission();
 	}
 
 	@Rule
@@ -141,7 +141,7 @@ public class AssigneeResourceTest extends BaseAssigneeResourceTestCase {
 		};
 	}
 
-	private void _testPostProcessAssigneesPageWithoutPermission()
+	private void _testPostProcessAssigneePageWithoutPermission()
 		throws Exception {
 
 		AssigneeResource assigneeResource =
