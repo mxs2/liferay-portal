@@ -255,7 +255,7 @@ public class SLAResourceTest extends BaseSLAResourceTestCase {
 		SLA sla = testGetSLA_addSLA();
 
 		SLAResource userSLAResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				SLAResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -288,7 +288,7 @@ public class SLAResourceTest extends BaseSLAResourceTestCase {
 
 	private void _testGetProcessSLAsPageWithoutPermission() throws Exception {
 		SLAResource userSLAResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				SLAResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -301,7 +301,7 @@ public class SLAResourceTest extends BaseSLAResourceTestCase {
 		SLA sla = testGetSLA_addSLA();
 
 		SLAResource userSLAResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				SLAResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -315,7 +315,7 @@ public class SLAResourceTest extends BaseSLAResourceTestCase {
 		long totalCount = page.getTotalCount();
 
 		SLAResource userSLAResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				SLAResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -333,7 +333,7 @@ public class SLAResourceTest extends BaseSLAResourceTestCase {
 		SLA sla = testPutSLA_addSLA();
 
 		SLAResource userSLAResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				SLAResource.class, testCompany);
 
 		assertHttpResponseStatusCode(

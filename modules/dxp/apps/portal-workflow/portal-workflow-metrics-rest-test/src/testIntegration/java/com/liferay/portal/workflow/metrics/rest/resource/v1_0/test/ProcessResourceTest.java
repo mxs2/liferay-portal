@@ -204,7 +204,7 @@ public class ProcessResourceTest extends BaseProcessResourceTestCase {
 		Process process = testBatchEngineDeleteImportTask_addProcess();
 
 		ImportTaskResource userImportTaskResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				ImportTaskResource.class, testCompany);
 
 		try (LogCapture logCapture = LoggerTestUtil.configureLog4JLogger(
@@ -233,7 +233,7 @@ public class ProcessResourceTest extends BaseProcessResourceTestCase {
 		Process process = testDeleteProcess_addProcess();
 
 		ProcessResource userProcessResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				ProcessResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -248,7 +248,7 @@ public class ProcessResourceTest extends BaseProcessResourceTestCase {
 		Process process = testGetProcess_addProcess();
 
 		ProcessResource userProcessResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				ProcessResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -260,7 +260,7 @@ public class ProcessResourceTest extends BaseProcessResourceTestCase {
 		Process process = testGetProcess_addProcess();
 
 		ProcessResource userProcessResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				ProcessResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -319,7 +319,7 @@ public class ProcessResourceTest extends BaseProcessResourceTestCase {
 
 	private void _testPostProcessWithoutPermission() throws Exception {
 		ProcessResource userProcessResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				ProcessResource.class, testCompany);
 
 		Process process = randomProcess();
@@ -335,7 +335,7 @@ public class ProcessResourceTest extends BaseProcessResourceTestCase {
 		Process process = testPutProcess_addProcess();
 
 		ProcessResource userProcessResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				ProcessResource.class, testCompany);
 
 		assertHttpResponseStatusCode(

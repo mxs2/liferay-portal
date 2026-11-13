@@ -593,7 +593,7 @@ public class NodeMetricResourceTest extends BaseNodeMetricResourceTestCase {
 		throws Exception {
 
 		NodeMetricResource nodeMetricResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				NodeMetricResource.class, testCompany);
 
 		assertHttpResponseStatusCode(

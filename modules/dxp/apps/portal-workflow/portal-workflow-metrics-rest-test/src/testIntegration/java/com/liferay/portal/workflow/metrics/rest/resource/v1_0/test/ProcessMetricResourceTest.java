@@ -281,7 +281,7 @@ public class ProcessMetricResourceTest
 		Process process = processMetric.getProcess();
 
 		ProcessMetricResource userProcessMetricResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				ProcessMetricResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
@@ -294,7 +294,7 @@ public class ProcessMetricResourceTest
 		throws Exception {
 
 		ProcessMetricResource userProcessMetricResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				ProcessMetricResource.class, testCompany);
 
 		assertHttpResponseStatusCode(

@@ -574,7 +574,7 @@ public class AssigneeMetricResourceTest
 		throws Exception {
 
 		AssigneeMetricResource assigneeMetricResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				AssigneeMetricResource.class, testCompany);
 
 		assertHttpResponseStatusCode(

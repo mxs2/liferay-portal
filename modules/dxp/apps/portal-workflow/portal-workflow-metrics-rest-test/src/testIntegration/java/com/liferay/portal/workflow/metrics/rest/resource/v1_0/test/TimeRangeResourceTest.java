@@ -109,7 +109,7 @@ public class TimeRangeResourceTest extends BaseTimeRangeResourceTestCase {
 
 	private void _testGetTimeRangesPageWithoutPermission() throws Exception {
 		TimeRangeResource timeRangeResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				TimeRangeResource.class, testCompany);
 
 		assertHttpResponseStatusCode(

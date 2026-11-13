@@ -146,7 +146,7 @@ public class RoleResourceTest extends BaseRoleResourceTestCase {
 
 	private void _testGetProcessRolesPageWithoutPermission() throws Exception {
 		RoleResource roleResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				RoleResource.class, testCompany);
 
 		assertHttpResponseStatusCode(

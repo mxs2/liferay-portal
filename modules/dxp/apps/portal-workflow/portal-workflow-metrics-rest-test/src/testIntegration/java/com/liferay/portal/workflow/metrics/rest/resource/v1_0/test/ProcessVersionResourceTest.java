@@ -136,7 +136,7 @@ public class ProcessVersionResourceTest
 		throws Exception {
 
 		ProcessVersionResource processVersionResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				ProcessVersionResource.class, testCompany);
 
 		assertHttpResponseStatusCode(

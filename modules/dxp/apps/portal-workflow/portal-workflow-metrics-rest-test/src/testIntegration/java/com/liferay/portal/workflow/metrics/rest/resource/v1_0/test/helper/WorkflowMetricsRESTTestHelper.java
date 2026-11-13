@@ -1056,7 +1056,7 @@ public class WorkflowMetricsRESTTestHelper {
 			searchHits.getSearchHits(), SearchHit::getDocument, Document.class);
 	}
 
-	public <T> T getUserWithoutPermissionsResource(
+	public <T> T getUserWithoutResourcePermissions(
 			Class<T> clazz, Company company)
 		throws Exception {
 

@@ -173,7 +173,7 @@ public class SLAResultResourceTest extends BaseSLAResultResourceTestCase {
 		throws Exception {
 
 		SLAResultResource slaResultResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				SLAResultResource.class, testCompany);
 
 		assertHttpResponseStatusCode(

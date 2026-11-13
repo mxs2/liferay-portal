@@ -51,7 +51,7 @@ public class ReindexStatusResourceTest
 		throws Exception {
 
 		ReindexStatusResource reindexStatusResource =
-			_workflowMetricsRESTTestHelper.getUserWithoutPermissionsResource(
+			_workflowMetricsRESTTestHelper.getUserWithoutResourcePermissions(
 				ReindexStatusResource.class, testCompany);
 
 		assertHttpResponseStatusCode(
